@@ -28,6 +28,15 @@ ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
     if(statFile == NULL) {
         return NULL;
     }
+    FILE * fp = fopen(statFile, "r");
+    char * dummy;
+    if(fp == NULL) {
+        return NULL;  
+    } else {
+        fscanf(fp, "%d %s %c %d %lu %lu %ld", &dummy, &dummy, 
+        &dummy, &dummy, &dummy, &dummy, &dummy);
+    }
+
     //Allocate space for ProcEntry in heap and validate
     ProcEntry * newProcess = (ProcEntry *) malloc(sizeof(ProcEntry));
     if(newProcess == NULL) {
