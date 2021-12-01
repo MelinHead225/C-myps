@@ -21,10 +21,6 @@ ProcEntry * CreateProcEntry(void) {
     return newProcess;
 }
 
-/*  
-The command field (comm) and path field 
-will be allocated on the heap using malloc.
-*/
 ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
     //Create Variables
     char * dummy = NULL; //holder
