@@ -15,7 +15,15 @@ ProcEntry * CreateProcEntry(void) {
     //Allocate space for ProcEntry in heap and validate
     ProcEntry * newProcess = (ProcEntry *) malloc(sizeof(ProcEntry));
     
-    //set all fields to null
+    //set fields to 0 or NULL
+    newProcess->process_id = 0;
+    newProcess->parent_process_id = 0;
+    newProcess->comm = NULL;
+    newProcess->state = 0;
+    newProcess->utime = 0;
+    newProcess->stime = 0;
+    newProcess->number_of_threads = 0;
+    newProcess->path = NULL;
 
     if(newProcess == NULL) {
         return NULL;
@@ -85,7 +93,6 @@ void DestroyProcEntry(ProcEntry * entry) {
     free(entry->comm);
     free(entry->path);
     free(entry);
-
 }
 
 void PrintProcEntry(ProcEntry *entry)
