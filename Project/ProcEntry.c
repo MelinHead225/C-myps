@@ -14,6 +14,9 @@
 ProcEntry * CreateProcEntry(void) {
     //Allocate space for ProcEntry in heap and validate
     ProcEntry * newProcess = (ProcEntry *) malloc(sizeof(ProcEntry));
+    
+    //set all fields to null
+
     if(newProcess == NULL) {
         return NULL;
     }
@@ -23,9 +26,9 @@ ProcEntry * CreateProcEntry(void) {
 
 ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
     //Create Variables
-    char * dummy = NULL; //holder
+    int numRead;
     int process_id; //1
-    char *comm = NULL; //2
+    char comm[255]; //2
     char state; //3
     int ppid; //4
     unsigned long int utime; //14
@@ -38,26 +41,32 @@ ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
     }
 
     FILE * fp = fopen(statFile, "r");
-
-    if(fp == NULL) {
-        fprintf(stderr, "Stat file couldn't open.\n");
-        return NULL;  
-    } else {
-        fscanf(fp, "%d %s %c %d %s %s %s %s %s %s %s %s %s %lu %lu %s %s %s %s %ld", 
-        &process_id, comm, &state, &ppid, dummy, dummy, dummy, dummy, dummy, dummy, dummy, 
-        dummy, dummy, &utime, &stime, dummy, dummy, dummy, dummy, &number_threads);
-    }
-
     //Allocate space for ProcEntry in heap and validate
     ProcEntry * newProcess = CreateProcEntry();
     if(newProcess == NULL) {
         fprintf(stderr, "Couldn't file new ProcEntry.\n");
         return NULL;
     }
+
+    newProcess->comm = (char*) malloc(255);                         //Allocating space for string
+    newProcess->path = (char*) malloc(strlen(statFile) + 1);        //Allocate space for path
+
+    if(fp == NULL) {
+        fprintf(stderr, "Stat file couldn't open.\n");
+        return NULL;  
+    } else {
+        numRead = fscanf(fp, "%d %s %c %d %*s %*s %*s %*s %*s %*s %*s %*s %*s %lu %lu %*s %*s %*s %*s %ld", 
+        &process_id, comm, &state, &ppid, &utime, &stime, &number_threads);
+    }
     
+    //checking for scanf errors
+    if(numRead != 7) {
+        printf("Scanf Error");
+    }
+
     newProcess->process_id = process_id;
-    newProcess->comm = (char*) malloc(strlen(comm) + 1);        //Allocating space for string
-    strncpy(newProcess->comm, comm, MAX_LENGTH);
+    strncpy(newProcess->path, statFile, strlen(statFile) + 1);
+    strncpy(newProcess->comm, comm, 255);
     newProcess->state = state;
     newProcess->parent_process_id = ppid;
     newProcess->utime = utime;
@@ -74,7 +83,9 @@ void DestroyProcEntry(ProcEntry * entry) {
     }
 
     free(entry->comm);
+    free(entry->path);
     free(entry);
+
 }
 
 void PrintProcEntry(ProcEntry *entry)
