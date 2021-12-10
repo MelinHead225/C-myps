@@ -61,6 +61,7 @@ ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
 
     if(fp == NULL) {
         fprintf(stderr, "Stat file couldn't open.\n");
+        DestroyProcEntry(newProcess);
         return NULL;  
     } else {
         numRead = fscanf(fp, "%d %s %c %d %*s %*s %*s %*s %*s %*s %*s %*s %*s %lu %lu %*s %*s %*s %*s %ld", 
@@ -70,6 +71,8 @@ ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
     //checking for scanf errors
     if(numRead != 7) {
         printf("Scanf Error");
+        DestroyProcEntry(newProcess);
+        return NULL;
     }
 
     newProcess->process_id = process_id;
@@ -80,6 +83,7 @@ ProcEntry * CreateProcEntryFromFile(const char statFile[]) {
     newProcess->utime = utime;
     newProcess->stime = stime;
     newProcess->number_of_threads = number_threads;
+    fclose(fp);
 
     return newProcess;
 }
