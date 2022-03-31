@@ -1,4 +1,4 @@
-/* File: ProcEntry.c
+/* File: ProcEntry.c 
  * Author: Eric Melin
  * Date: Fri 26 Nov 2021 06:17:00 PM PST
  * Description: Struct and functions for working with ProcEntry data
